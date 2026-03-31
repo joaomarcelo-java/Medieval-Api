@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15
+    container_name: medieval-db
+    restart: always
+    environment:
+      POSTGRES_USER: USUARIO_MEDIEVAL
+      POSTGRES_PASSWORD: SENHA_MEDIEVAL
+      POSTGRES_DB: kingdom_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_medieval_data:/var/lib/postgresql/data
+
+volumes:
+  pg_medieval_data:

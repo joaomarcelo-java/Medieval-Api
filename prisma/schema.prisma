@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Personagem{
+  id Int @id @default(autoincrement())
+  nome String
+  classe String
+  nivel Int
+  itens Item[]
+
+  //Pode ou nao ter uma guilda associada.
+  guilda Guilda? @relation(fields: [guildaId], references:[id])
+  guildaId Int?
+}
+model Item{
+  id Int @id @default(autoincrement())
+  nome String
+  tipo String
+  raridade String
+
+  //Pode ou não ter um personagem associado, ou seja, pode ficar dropado, sem dono.
+  //Campo @relation é necessário para criar a relação entre as tabelas, e os campos fields e references são usados para definir a chave estrangeira.
+  personagem Personagem? @relation(fields: [personagemId], references:[id])
+  personagemId Int?
+}
+model Guilda{
+  id Int @id @default(autoincrement())
+  nome String
+  membros Personagem[]
+}
