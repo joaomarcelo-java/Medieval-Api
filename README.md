@@ -1,98 +1,163 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ⚔️ Medieval API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend RESTful robusto e escalável para um sistema de RPG medieval, construído com NestJS, Prisma ORM e PostgreSQL. Arquitetura modular, testes E2E, stress test e documentação automática via Swagger.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> 🎓 **Projeto de treinamento** — desenvolvido com fins educacionais para praticar arquitetura backend profissional com Node.js e TypeScript.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Sobre o projeto
 
-## Project setup
+A Medieval API nasceu como um estudo aprofundado de arquitetura backend profissional — indo além do CRUD básico. O projeto simula o backend de um mundo medieval, com personagens, guildas e itens, aplicando os mesmos padrões de design utilizados por grandes empresas como Uber e o próprio time do NestJS.
 
-```bash
-$ npm install
+---
+
+## ✨ Funcionalidades
+
+- 🧙 **Personagens** — criação, atualização, remoção e busca de personagens com validação de dados
+- 🏰 **Guildas** — gerenciamento de guildas com relacionamento 1:N com personagens
+- 🗡️ **Itens** — cadastro de equipamentos com filtros por raridade, tipo e nome (case insensitive)
+- 📖 **Documentação interativa** — via Swagger em `/api`, sem necessidade de ferramentas externas
+- 🧪 **Testes automatizados** — E2E com Supertest e stress test com Autocannon
+- 🌱 **Mass Seeding** — scripts com Faker para popular o banco com milhares de registros realistas
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+| Camada | Tecnologia |
+|---|---|
+| Framework | NestJS (TypeScript) |
+| ORM | Prisma **6.0** |
+| Banco de dados | PostgreSQL |
+| Infraestrutura | Docker / Docker Compose |
+| Validação | class-validator / class-transformer |
+| Testes E2E | Jest + Supertest |
+| Documentação | Swagger (OpenAPI) |
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue a arquitetura modular do NestJS, onde cada domínio é isolado em seu próprio módulo:
+
+```
+src/
+├── guildas/
+│   ├── dto/
+│   ├── guildas.controller.ts
+│   ├── guildas.service.ts
+│   └── guildas.module.ts
+├── personagens/
+│   ├── dto/
+│   ├── personagens.controller.ts
+│   ├── personagens.service.ts
+│   └── personagens.module.ts
+├── itens/
+│   ├── dto/
+│   ├── itens.controller.ts
+│   ├── itens.service.ts
+│   └── itens.module.ts
+├── app.module.ts
+├── app.controller.ts
+└── main.ts
+
+prisma/
+├── migrations/
+└── schema.prisma
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 🧩 Domínios e Relacionamentos
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+Guilda (1) ──── (N) Personagem (1) ──── (N) Item
 ```
 
-## Run tests
+- **Guilda → Personagem**: Uma guilda possui muitos personagem; cada personagem pertence a uma guilda.
+- **Personagem → Item**: Um personagem possui vários itens; cada item pertence a um único dono.
+
+---
+
+## 🎯 Padrões de Projeto aplicados
+
+- **DTO (Data Transfer Object)** — objetos dedicados para entrada e validação de dados
+- **Dependency Injection** — o NestJS gerencia o ciclo de vida dos serviços automaticamente
+- **Partial Types** — `UpdateDTO` permite atualizar campos individuais sem reenviar o objeto completo
+- **Validation Pipes** — filtros globais que barram dados inválidos antes de chegarem ao banco
+
+---
+
+## ▶️ Como rodar
+
+**Pré-requisitos:**
+- Node.js 18+
+- Docker e Docker Compose
 
 ```bash
-# unit tests
-$ npm run test
+# Clone o repositório
+git clone https://github.com/joaomarcelo-java/Medieval-Api.git
 
-# e2e tests
-$ npm run test:e2e
+# Acesse a pasta
+cd Medieval-Api
 
-# test coverage
-$ npm run test:cov
+# Configure as variáveis de ambiente
+cp .env.example .env
+
+# Suba o banco de dados com Docker
+docker-compose up -d
+
+# Instale as dependências
+npm install
 ```
 
-## Deployment
+**Instalação do Prisma 6.0:**
+```bash
+# Instala o Prisma CLI (versão 6)
+npm install prisma@6 --save-dev
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# Instala o Prisma Client (versão 6)
+npm install @prisma/client@6
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# Gera o client com base no schema
+npx prisma generate
+
+# Roda as migrations
+npx prisma migrate dev
+```
+
+**Inicia a aplicação:**
+```bash
+npm run start:dev
+```
+
+A API estará disponível em `http://localhost:3000`.  
+A documentação Swagger estará em `http://localhost:3000/api`.
+
+---
+
+## 🧪 Testes
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Testes E2E
+npm run test:e2e
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🗂️ Variáveis de ambiente
 
-Check out a few resources that may come in handy when working with NestJS:
+Crie um arquivo `.env` na raiz com base no exemplo abaixo:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```env
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/medieval_db"
+```
 
-## Support
+> O arquivo `.env` está no `.gitignore` e nunca deve ser enviado ao repositório.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 👨‍💻 Autor
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Feito por **João Marcelo** — sinta-se à vontade para abrir issues ou pull requests!
